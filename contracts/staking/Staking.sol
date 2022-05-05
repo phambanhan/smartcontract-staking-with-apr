@@ -153,7 +153,7 @@ contract Staking is Ownable {
         }
         uint256 aprOfPackage = getAprOfPackage(packageId_);
         uint256 numberOfDays = (block.timestamp - stake.timePoint) / (60 * 60 * 24);
-        return (stake.amount * aprOfPackage * numberOfDays)/1e18 + stake.totalProfit;
+        return (stake.amount * (aprOfPackage / 365) * numberOfDays) / 1e18 + stake.totalProfit;
     }
 
     function getAprOfPackage(uint256 packageId_)
@@ -163,7 +163,7 @@ contract Staking is Ownable {
     {
         StakePackage memory stakePackage = stakePackages[packageId_];
         uint256 rate = (stakePackage.rate * 1e18) / 10 ** (stakePackage.decimal + 2);
-        return rate / 365;
+        return rate;
     }
 
     function getStakePackage(uint256 packageId_)

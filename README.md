@@ -11,5 +11,5 @@ Reserve deployed to:
 ```
 Staking deployed to: 
 ```shell
-0x8f077Bb6d62FA531a061d60f091De42eC0cE8702
+0x08622766A78546188F792d277C08a3997aabC044
 ```
