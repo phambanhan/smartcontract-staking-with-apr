@@ -7,9 +7,9 @@ Gold deployed to:
 ```
 Reserve deployed to: 
 ```shell
-0xd88857261a205deeae28F329Ff5701BC05Fd7916
+0x9bE6733a759c24F7d0Eb53D0C65CaDf1A896deF5
 ```
 Staking deployed to: 
 ```shell
-0x08622766A78546188F792d277C08a3997aabC044
+0xd1804a66dbE4755818Be3443E37d556Ccbab0214
 ```

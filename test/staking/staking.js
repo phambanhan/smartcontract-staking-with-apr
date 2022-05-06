@@ -22,7 +22,6 @@ describe("staking", function () {
         const Reserve = await ethers.getContractFactory("StakingReserve");
         reserve = await Reserve.deploy(gold.address)
         await reserve.deployed()
-        await gold.transfer(reserve.address, defaulBalance)
 
         const Staking = await ethers.getContractFactory("Staking");
         staking = await Staking.deploy(gold.address, reserve.address)
@@ -109,7 +108,7 @@ describe("staking", function () {
             expect(profit).to.be.equal(ethers.utils.parseEther(profitExpect.toString()))
         });
 
-        it("unstake profit one day should be correctly", async function () {
+        it("unstake should revert reserveBalance invalid", async function () {
             await gold.approve(staking.address, ethers.utils.parseEther("100"))
             let tx = await staking.stake(ethers.utils.parseEther("100"), 1);
             await expect(tx).to.be.emit(staking, "StakeUpdate")
@@ -118,8 +117,23 @@ describe("staking", function () {
             await network.provider.send("evm_increaseTime", [oneDay+1]);
             await ethers.provider.send("evm_mine", []);
 
-            const txUnStake = await staking.unStake(1);
+            await expect(staking.unStake(1))
+            .to.be.revertedWith("Staking: reserveBalance invalid");
+        });
+
+        it("unstake profit one day should be correctly", async function () {
+            await gold.approve(staking.address, ethers.utils.parseEther("100"))
+            let tx = await staking.stake(ethers.utils.parseEther("100"), 1);
+            await expect(tx).to.be.emit(staking, "StakeUpdate")
+                .withArgs(admin.address, 1, ethers.utils.parseEther("100"), "0");
+
+
             const profitExpect = 1 * 100/365 * 0.1;
+            await gold.transfer(reserve.address, ethers.utils.parseEther(profitExpect.toString()))
+            await network.provider.send("evm_increaseTime", [oneDay+1]);
+            await ethers.provider.send("evm_mine", []);
+
+            const txUnStake = await staking.unStake(1);
             await expect(txUnStake).to.be.emit(staking, "StakeReleased")
                 .withArgs(admin.address, 1, ethers.utils.parseEther("100"), ethers.utils.parseEther(profitExpect.toString()));
         });

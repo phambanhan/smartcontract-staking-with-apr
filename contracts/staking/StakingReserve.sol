@@ -18,7 +18,7 @@ contract StakingReserve is Ownable {
         return mainToken.balanceOf(address(this));
     }
 
-    function setStakeAdress(address _stakeAddress) external {
+    function setStakeAdress(address _stakeAddress) external onlyOwner {
         require(_stakeAddress != address(0), "StakingReserve: _stakeAddress is zero address");
         stakeAddress = _stakeAddress;
     }

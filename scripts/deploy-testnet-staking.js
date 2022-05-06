@@ -15,7 +15,7 @@ async function main() {
 
   // We get the contract to deploy
   const StakingContract = await ethers.getContractFactory('Staking')
-  const stakingContract = await StakingContract.deploy('0x4972248fA459CF7C4c511154071a14775Eb4e2F2', '0xd88857261a205deeae28F329Ff5701BC05Fd7916');
+  const stakingContract = await StakingContract.deploy('0x4972248fA459CF7C4c511154071a14775Eb4e2F2', '0x9bE6733a759c24F7d0Eb53D0C65CaDf1A896deF5');
   await stakingContract.deployed()
   console.log("stakingContract deployed to:", stakingContract.address);
 }

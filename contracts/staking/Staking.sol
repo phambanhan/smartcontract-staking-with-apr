@@ -127,8 +127,9 @@ contract Staking is Ownable {
         require(stake.amount > 0, "Staking: user amount must be greater than zero");
         uint256 totalProfit = calculateProfit(packageId_);
         uint256 amount = stake.amount;
-        uint256 total = calculateProfit(packageId_)/1e18 + stake.amount;
-
+        uint256 total = totalProfit + stake.amount;
+        uint256 reserveBalance = reserve.getBalanceOfReserve();
+        require(reserveBalance >= total, "Staking: reserveBalance invalid");
         delete stakes[msg.sender][packageId_];
         reserve.distributeGold(
             address(msg.sender),
