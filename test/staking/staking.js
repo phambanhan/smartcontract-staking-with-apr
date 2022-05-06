@@ -137,5 +137,29 @@ describe("staking", function () {
             await expect(txUnStake).to.be.emit(staking, "StakeReleased")
                 .withArgs(admin.address, 1, ethers.utils.parseEther("100"), ethers.utils.parseEther(profitExpect.toString()));
         });
+
+        it("stake 2 times and unstake profit should be correctly", async function () {
+            await gold.approve(staking.address, ethers.utils.parseEther("200"))
+            let tx = await staking.stake(ethers.utils.parseEther("100"), 1);
+            await expect(tx).to.be.emit(staking, "StakeUpdate")
+                .withArgs(admin.address, 1, ethers.utils.parseEther("100"), "0");
+
+            await network.provider.send("evm_increaseTime", [oneDay+1]);
+            await ethers.provider.send("evm_mine", []);
+
+            let profitExpect = 1 * 100/365 * 0.1;
+            tx = await staking.stake(ethers.utils.parseEther("100"), 1);
+            await expect(tx).to.be.emit(staking, "StakeUpdate")
+                .withArgs(admin.address, 1, ethers.utils.parseEther("100"), ethers.utils.parseEther(profitExpect.toString()));
+
+            profitExpect = profitExpect + 2 * 100/365 * 0.1;
+            await gold.transfer(reserve.address, ethers.utils.parseEther(profitExpect.toString()))
+            await network.provider.send("evm_increaseTime", [oneDay+1]);
+            await ethers.provider.send("evm_mine", []);
+
+            const txUnStake = await staking.unStake(1);
+            await expect(txUnStake).to.be.emit(staking, "StakeReleased")
+                .withArgs(admin.address, 1, ethers.utils.parseEther("200"), ethers.utils.parseEther(profitExpect.toString()));
+        });
     })
 })
